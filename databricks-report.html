@@ -1,0 +1,65 @@
+<section class="content-area">
+  <div class="top-bar">
+    <div>
+      <h2>Databricks Dashboard</h2>
+      <p class="top-subtitle">Interactive embedded analytics</p>
+    </div>
+    <div class="top-bar-right">
+      <div class="selected-report" *ngIf="selectedDashboardLabel">{{ selectedDashboardLabel }}</div>
+    </div>
+  </div>
+
+  <div class="workspace-tabs" *ngIf="workspaces.length > 1">
+    <button
+      type="button"
+      class="workspace-tab"
+      *ngFor="let ws of workspaces"
+      [class.active]="ws.workspaceId === selectedWorkspace?.workspaceId"
+      (click)="selectWorkspace(ws)">
+      {{ ws.name }}
+    </button>
+  </div>
+
+  <div class="report-tabs" *ngIf="dashboards.length > 0">
+    <button
+      type="button"
+      class="report-tab"
+      *ngFor="let dashboard of dashboards"
+      [class.active]="dashboard.dashboardId === selectedDashboardId"
+      (click)="selectDashboard(dashboard)">
+      {{ dashboard.label }}
+    </button>
+  </div>
+
+  <div id="errorMessage" class="error-message" [style.display]="errorMessage ? 'flex' : 'none'">
+    ❌ {{ errorMessage }}
+  </div>
+
+  <div class="control-panel">
+    <div class="control-note">Dashboard loads automatically when you select a report tab.</div>
+
+    <div class="button-group">
+      <button id="btnReload" (click)="loadSelectedDashboard()" class="btn-library" [disabled]="!selectedDashboardId">
+        Reload Selected Report
+      </button>
+
+      <button id="btnClear" (click)="clearAll()" class="btn-clear">
+        Clear
+      </button>
+    </div>
+  </div>
+
+  <div class="content">
+    <div id="loadingIndicator" class="loading-indicator" [style.display]="isLoading ? 'block' : 'none'">
+      <p>⏳ Loading dashboard...</p>
+      <p class="loading-subtext">
+        This may take a moment...
+      </p>
+    </div>
+
+    <iframe *ngIf="showIframe" id="dashboardIframe" [src]="dashboardIframeUrl" class="dashboard-iframe"
+      (load)="handleIframeLoad()" (error)="handleIframeError()"></iframe>
+
+    <div id="dashboard-container" class="dashboard-container" [style.display]="showContainer ? 'flex' : 'none'"></div>
+  </div>
+</section>
